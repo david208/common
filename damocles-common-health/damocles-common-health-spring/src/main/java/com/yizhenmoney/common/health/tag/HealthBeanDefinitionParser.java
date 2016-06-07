@@ -29,7 +29,7 @@ public class HealthBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
 
 	@Override
 	protected String getBeanClassName(Element element) {
-		return "com.yizhenmoney.mercury.configuration.HealthConfig";
+		return "com.yizhenmoney.common.health.configuration.HealthConfig";
 	}
 
 	@Override
