@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>damocles-common-health</artifactId>
+	<packaging>pom</packaging>
+	<parent>
+		<groupId>com.yizhenmoney.common</groupId>
+		<artifactId>damocles-common</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<modules>
+		<module>damocles-common-health-core</module>
+		<module>damocles-common-health-extend</module>
+		<module>damocles-common-health-jetty</module>
+		<module>damocles-common-health-tomcat</module>
+		<module>damocles-common-health-spring</module>
+		<module>damocles-common-health-boot</module>
+		<module>damocles-common-health-simple</module>
+	</modules>
+
+	<name>damocles-common-health</name>
+	<url>http://www.jlfex.com</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Team Nexus public Repository</name>
+			<url>http://192.168.220.207:8081/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>nexus-snapshots</id>
+			<name>Snapshots</name>
+			<url>http://192.168.220.207:8081/content/repositories/snapshots/</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<id>nexus-snapshots</id>
+			<name>Snapshots</name>
+			<url>http://192.168.220.207:8081/content/repositories/snapshots/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+
+</project>
