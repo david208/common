@@ -1,4 +1,4 @@
-package com.yizhenmoney.common.redis;
+package com.yizhenmoney.common.redis.configuration;
 
 import java.util.concurrent.TimeUnit;
 

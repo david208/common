@@ -1,4 +1,4 @@
-package com.yizhenmoney.common.redis;
+package com.yizhenmoney.common.redis.configuration;
 
 import java.util.Collection;
 
@@ -32,6 +32,7 @@ public class RedisConfig {
 		return new RedisClusterConfiguration(clusterNodes);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Bean
 	public RedisTemplate redisTemplate(JedisConnectionFactory jedisConnFactory) {
 		RedisTemplate redisTemplate = new RedisTemplate();
@@ -40,7 +41,7 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public CacheManager cacheManager(RedisTemplate redisTemplate, RedisCachePrefix redisCachePrefix) {
+	public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate, RedisCachePrefix redisCachePrefix) {
 		// configure and return an implementation of Spring's CacheManager SPI
 		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
 		cacheManager.setUsePrefix(true);
@@ -49,17 +50,19 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisCachePrefix yizhenRedisCachePrefix(@Value("${systemCode:crm}") String systemName) {
+	public RedisCachePrefix yizhenRedisCachePrefix(@Value("${sys.self.name}") String systemName) {
 		YizhenRedisCachePrefix cachePrefix = new YizhenRedisCachePrefix();
 		cachePrefix.setPrefix(systemName);
 		return cachePrefix;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
-	public RedisMapService redisMapService(RedisTemplate redisTemplate, @Value("${systemCode:crm}") String systemName) {
+	public RedisMapService redisMapService(RedisTemplate redisTemplate, @Value("${sys.self.name}") String systemName) {
 		return new RedisMapService(redisTemplate.opsForHash(), systemName);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public RedisLockService redisLockService(RedisTemplate redisTemplate,
 			@Value("${systemCode:crm}") String systemName) {

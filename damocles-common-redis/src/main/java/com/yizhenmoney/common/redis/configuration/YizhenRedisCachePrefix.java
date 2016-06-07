@@ -1,4 +1,4 @@
-package com.yizhenmoney.common.redis;
+package com.yizhenmoney.common.redis.configuration;
 
 import org.springframework.data.redis.cache.RedisCachePrefix;
 import org.springframework.data.redis.serializer.RedisSerializer;
