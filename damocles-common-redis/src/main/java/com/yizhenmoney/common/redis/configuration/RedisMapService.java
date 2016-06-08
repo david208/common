@@ -1,11 +1,12 @@
 package com.yizhenmoney.common.redis.configuration;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.HashOperations;
 
-public class RedisMapService<T> {
+public class RedisMapService<T extends Serializable> {
 
 	private HashOperations<String, String, T> hashOperations;
 
