@@ -14,6 +14,9 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
+import com.yizhenmoney.common.redis.service.RedisLockService;
+import com.yizhenmoney.common.redis.service.RedisMapService;
+
 @Configuration
 @EnableRedisHttpSession
 @EnableCaching

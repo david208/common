@@ -1,4 +1,4 @@
-package com.yizhenmoney.common.redis.configuration;
+package com.yizhenmoney.common.redis.service;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -6,6 +6,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.HashOperations;
 
+/**
+ * redis的hash操作
+ * 
+ * @author sm
+ *
+ * @param <T>
+ */
 public class RedisMapService<T extends Serializable> {
 
 	private HashOperations<String, String, T> hashOperations;
@@ -47,7 +54,7 @@ public class RedisMapService<T extends Serializable> {
 	}
 
 	public Map<String, T> getAll(String type) {
-		return hashOperations.entries(type);
+		return hashOperations.entries(sysName + type);
 
 	}
 
