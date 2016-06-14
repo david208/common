@@ -14,8 +14,11 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
+import com.yizhenmoney.common.redis.service.RedisListService;
 import com.yizhenmoney.common.redis.service.RedisLockService;
 import com.yizhenmoney.common.redis.service.RedisMapService;
+import com.yizhenmoney.common.redis.service.RedisSetService;
+import com.yizhenmoney.common.redis.service.RedisStringService;
 
 @Configuration
 @EnableRedisHttpSession
@@ -68,8 +71,29 @@ public class RedisConfig {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public RedisLockService redisLockService(RedisTemplate redisTemplate,
-			@Value("${systemCode:crm}") String systemName) {
+			@Value("${sys.self.name}") String systemName) {
 		return new RedisLockService(redisTemplate.opsForValue(), systemName);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Bean
+	public RedisListService redisListService(RedisTemplate redisTemplate,
+			@Value("${sys.self.name}") String systemName) {
+		return new RedisListService(redisTemplate.opsForList(), systemName);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Bean
+	public RedisSetService redisSetService(RedisTemplate redisTemplate,
+			@Value("${sys.self.name}") String systemName) {
+		return new RedisSetService(redisTemplate.opsForSet(), systemName);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Bean
+	public RedisStringService redisStringService(RedisTemplate redisTemplate,
+			@Value("${sys.self.name}") String systemName) {
+		return new RedisStringService(redisTemplate.opsForValue(), systemName);
 	}
 
 }
