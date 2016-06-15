@@ -47,11 +47,12 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate, RedisCachePrefix redisCachePrefix) {
+	public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate, RedisCachePrefix redisCachePrefix,@Value("${redis.cluster.cache.expiration:3600}") Long expiration) {
 		// configure and return an implementation of Spring's CacheManager SPI
 		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
 		cacheManager.setUsePrefix(true);
 		cacheManager.setCachePrefix(redisCachePrefix);
+		cacheManager.setDefaultExpiration(expiration);
 		return cacheManager;
 	}
 
