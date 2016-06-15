@@ -14,11 +14,9 @@ import org.springframework.data.redis.core.ListOperations;
  *
  * @param <T>
  */
-public class RedisListService<T extends Serializable> {
+public class RedisListService<T extends Serializable> extends AbstractRedisService {
 
 	private ListOperations<String, T> listOperations;
-
-	private String sysName;
 
 	public RedisListService(ListOperations<String, T> listOperations, String sysName) {
 		this.listOperations = listOperations;
@@ -27,11 +25,11 @@ public class RedisListService<T extends Serializable> {
 
 	public void leftPush(String type, String key, T value, long timeout, TimeUnit unit) {
 		leftPushWithoutTimeout(type, key, value);
-		listOperations.getOperations().expire(sysName + type + key, timeout, unit);
+		listOperations.getOperations().expire(genKey(type, key), timeout, unit);
 	}
 
 	public void leftPushWithoutTimeout(String type, String key, T value) {
-		listOperations.leftPush(sysName + type + key, value);
+		listOperations.leftPush(genKey(type, key), value);
 	}
 
 	/**
@@ -46,15 +44,15 @@ public class RedisListService<T extends Serializable> {
 	 */
 	public void leftPush(String type, String key, T value) {
 		leftPushWithoutTimeout(type, key, value);
-		listOperations.getOperations().expire(sysName + type + key, 1l, TimeUnit.HOURS);
+		listOperations.getOperations().expire(genKey(type, key), 1l, TimeUnit.HOURS);
 	}
 
 	public void rightPop(String type, String key) {
-		listOperations.rightPop(sysName + type + key);
+		listOperations.rightPop(genKey(type, key));
 	}
 
 	public List<T> getAll(String type, String key) {
-		return listOperations.range(sysName + type + key, 0, -1);
+		return listOperations.range(genKey(type, key), 0, -1);
 
 	}
 

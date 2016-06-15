@@ -13,11 +13,9 @@ import org.springframework.data.redis.core.ValueOperations;
  *
  * @param <T>
  */
-public class RedisStringService<T extends Serializable> {
+public class RedisStringService<T extends Serializable> extends AbstractRedisService {
 
 	private ValueOperations<String, T> valueOperations;
-
-	private String sysName;
 
 	public RedisStringService(ValueOperations<String, T> valueOperations, String sysName) {
 		this.valueOperations = valueOperations;
@@ -32,7 +30,7 @@ public class RedisStringService<T extends Serializable> {
 	 * @param unit
 	 */
 	public void set(String type, String key, T value, long timeout, TimeUnit unit) {
-		valueOperations.set(sysName + type + key, value, timeout, unit);
+		valueOperations.set(genKey(type, key), value, timeout, unit);
 	}
 
 	/**
@@ -47,7 +45,7 @@ public class RedisStringService<T extends Serializable> {
 	}
 
 	public void setWithoutTimeout(String type, String key, T value) {
-		valueOperations.set(sysName + type + key, value);
+		valueOperations.set(genKey(type, key), value);
 	}
 
 	/**
@@ -57,7 +55,7 @@ public class RedisStringService<T extends Serializable> {
 	 * @param key
 	 */
 	public void get(String type, String key) {
-		valueOperations.get(sysName + type + key);
+		valueOperations.get(genKey(type, key));
 	}
 
 }

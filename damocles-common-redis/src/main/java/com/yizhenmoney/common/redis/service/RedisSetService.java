@@ -15,11 +15,9 @@ import org.springframework.data.redis.core.SetOperations;
  * @param <T>
  */
 @SuppressWarnings("unchecked")
-public class RedisSetService<T extends Serializable> {
+public class RedisSetService<T extends Serializable> extends AbstractRedisService {
 
 	private SetOperations<String, T> setOperations;
-
-	private String sysName;
 
 	public RedisSetService(SetOperations<String, T> setOperations, String sysName) {
 		this.setOperations = setOperations;
@@ -28,11 +26,11 @@ public class RedisSetService<T extends Serializable> {
 
 	public void add(String type, String key, long timeout, TimeUnit unit, T... value) {
 		addWithoutTimeout(type, key, value);
-		setOperations.getOperations().expire(sysName + type + key, timeout, unit);
+		setOperations.getOperations().expire(genKey(type, key), timeout, unit);
 	}
 
 	public void addWithoutTimeout(String type, String key, T... value) {
-		setOperations.add(sysName + type + key, value);
+		setOperations.add(genKey(type, key), value);
 	}
 
 	/**
@@ -47,11 +45,11 @@ public class RedisSetService<T extends Serializable> {
 	}
 
 	public void remove(String type, String key, T value) {
-		setOperations.remove(sysName + type + key, value);
+		setOperations.remove(genKey(type, key), value);
 	}
 
 	public Set<T> getAll(String type, String key) {
-		return setOperations.members(sysName + type + key);
+		return setOperations.members(genKey(type, key));
 
 	}
 

@@ -10,11 +10,10 @@ import org.springframework.data.redis.core.ValueOperations;
  * @author sm
  *
  */
-public class RedisLockService {
+public class RedisLockService extends AbstractRedisService{
 
 	private ValueOperations<String, String> valueOperations;
 
-	private String sysName;
 
 	public RedisLockService(ValueOperations<String, String> valueOperations, String sysName) {
 		this.valueOperations = valueOperations;
@@ -33,7 +32,7 @@ public class RedisLockService {
 	public boolean lock(String type, String key, long timeout, TimeUnit unit) {
 		boolean result = lockWithoutTimeout(type, key);
 		if (result)
-			valueOperations.getOperations().expire(sysName + type + key, timeout, unit);
+			valueOperations.getOperations().expire(genKey(type, key), timeout, unit);
 		return result;
 	}
 
@@ -49,7 +48,7 @@ public class RedisLockService {
 	}
 
 	public boolean lockWithoutTimeout(String type, String key) {
-		return valueOperations.setIfAbsent(sysName + type + key, "");
+		return valueOperations.setIfAbsent(genKey(type, key), "");
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class RedisLockService {
 	 * @return
 	 */
 	public void unlock(String type, String key) {
-		valueOperations.getOperations().delete(sysName + type + key);
+		valueOperations.getOperations().delete(genKey(type, key));
 	}
 
 }

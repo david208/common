@@ -13,11 +13,9 @@ import org.springframework.data.redis.core.HashOperations;
  *
  * @param <T>
  */
-public class RedisMapService<T extends Serializable> {
+public class RedisMapService<T extends Serializable> extends AbstractRedisService{
 
 	private HashOperations<String, String, T> hashOperations;
-
-	private String sysName;
 
 	public RedisMapService(HashOperations<String, String, T> hashOperations, String sysName) {
 		this.hashOperations = hashOperations;
@@ -26,11 +24,11 @@ public class RedisMapService<T extends Serializable> {
 
 	public void put(String type, String key, T value, long timeout, TimeUnit unit) {
 		putWithoutTimeout(type, key, value);
-		hashOperations.getOperations().expire(sysName + type, timeout, unit);
+		hashOperations.getOperations().expire(genKey(type), timeout, unit);
 	}
 
 	public void putWithoutTimeout(String type, String key, T value) {
-		hashOperations.put(sysName + type, key, value);
+		hashOperations.put(genKey(type), key, value);
 	}
 
 	/**
@@ -42,19 +40,19 @@ public class RedisMapService<T extends Serializable> {
 	 */
 	public void put(String type, String key, T value) {
 		putWithoutTimeout(type, key, value);
-		hashOperations.getOperations().expire(sysName + type, 1l, TimeUnit.HOURS);
+		hashOperations.getOperations().expire(genKey(type), 1l, TimeUnit.HOURS);
 	}
 
 	public void remove(String type, String key) {
-		hashOperations.delete(sysName + type, key);
+		hashOperations.delete(genKey(type), key);
 	}
 
 	public T get(String type, String key) {
-		return hashOperations.get(sysName + type, key);
+		return hashOperations.get(genKey(type), key);
 	}
 
 	public Map<String, T> getAll(String type) {
-		return hashOperations.entries(sysName + type);
+		return hashOperations.entries(genKey(type));
 
 	}
 
