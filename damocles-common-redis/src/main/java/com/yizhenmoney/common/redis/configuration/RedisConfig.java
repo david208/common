@@ -14,6 +14,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
+import com.yizhenmoney.common.redis.aop.DistributedLockAspect;
 import com.yizhenmoney.common.redis.service.RedisListService;
 import com.yizhenmoney.common.redis.service.RedisLockService;
 import com.yizhenmoney.common.redis.service.RedisMapService;
@@ -47,7 +48,8 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate, RedisCachePrefix redisCachePrefix,@Value("${redis.cluster.cache.expiration:3600}") Long expiration) {
+	public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate,
+			RedisCachePrefix redisCachePrefix, @Value("${redis.cluster.cache.expiration:3600}") Long expiration) {
 		// configure and return an implementation of Spring's CacheManager SPI
 		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
 		cacheManager.setUsePrefix(true);
@@ -75,26 +77,30 @@ public class RedisConfig {
 			@Value("${sys.self.name}") String systemName) {
 		return new RedisLockService(redisTemplate.opsForValue(), systemName);
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public RedisListService redisListService(RedisTemplate redisTemplate,
 			@Value("${sys.self.name}") String systemName) {
 		return new RedisListService(redisTemplate.opsForList(), systemName);
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
-	public RedisSetService redisSetService(RedisTemplate redisTemplate,
-			@Value("${sys.self.name}") String systemName) {
+	public RedisSetService redisSetService(RedisTemplate redisTemplate, @Value("${sys.self.name}") String systemName) {
 		return new RedisSetService(redisTemplate.opsForSet(), systemName);
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public RedisStringService redisStringService(RedisTemplate redisTemplate,
 			@Value("${sys.self.name}") String systemName) {
 		return new RedisStringService(redisTemplate.opsForValue(), systemName);
+	}
+
+	@Bean
+	public DistributedLockAspect distributedLockAspect(RedisLockService redisLockService) {
+		return new DistributedLockAspect(redisLockService);
 	}
 
 }

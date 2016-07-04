@@ -16,4 +16,12 @@
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+
+	<xsd:element name="aop">
+		<xsd:complexType>
+			<xsd:attribute type="xsd:string" name="id" use="optional"
+				default="redisAopConfig">
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>  
