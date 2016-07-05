@@ -12,6 +12,7 @@ import org.springframework.data.redis.cache.RedisCachePrefix;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import com.yizhenmoney.common.redis.aop.DistributedLockAspect;
@@ -59,9 +60,10 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisCachePrefix yizhenRedisCachePrefix(@Value("${sys.self.name}") String systemName) {
+	public RedisCachePrefix yizhenRedisCachePrefix(@Value("${sys.self.name}") String systemName,RedisOperationsSessionRepository sessionRepository) {
 		YizhenRedisCachePrefix cachePrefix = new YizhenRedisCachePrefix();
 		cachePrefix.setPrefix(systemName);
+		sessionRepository.setRedisKeyNamespace(systemName);
 		return cachePrefix;
 	}
 
@@ -102,5 +104,6 @@ public class RedisConfig {
 	public DistributedLockAspect distributedLockAspect(RedisLockService redisLockService) {
 		return new DistributedLockAspect(redisLockService);
 	}
+	
 
 }
