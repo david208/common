@@ -15,7 +15,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
-import com.yizhenmoney.common.redis.aop.DistributedLockAspect;
 import com.yizhenmoney.common.redis.service.RedisListService;
 import com.yizhenmoney.common.redis.service.RedisLockService;
 import com.yizhenmoney.common.redis.service.RedisMapService;
@@ -98,11 +97,6 @@ public class RedisConfig {
 	public RedisStringService redisStringService(RedisTemplate redisTemplate,
 			@Value("${sys.self.name}") String systemName) {
 		return new RedisStringService(redisTemplate.opsForValue(), systemName);
-	}
-
-	@Bean
-	public DistributedLockAspect distributedLockAspect(RedisLockService redisLockService) {
-		return new DistributedLockAspect(redisLockService);
 	}
 	
 
