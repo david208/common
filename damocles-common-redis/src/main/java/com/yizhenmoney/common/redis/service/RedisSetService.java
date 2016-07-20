@@ -53,4 +53,21 @@ public class RedisSetService<T extends Serializable> extends AbstractRedisServic
 
 	}
 
+	/**  包含某個值
+	 * @param type
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public boolean contains(String type, String key, T value) {
+		return setOperations.isMember(genKey(type, key), value);
+	}
+	
+	/**  清除
+	 * @param type
+	 * @param key
+	 */
+	public void clear(String type, String key) {
+		setOperations.getOperations().delete(genKey(type, key));
+	}
 }

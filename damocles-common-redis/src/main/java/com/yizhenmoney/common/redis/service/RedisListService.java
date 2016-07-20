@@ -55,5 +55,13 @@ public class RedisListService<T extends Serializable> extends AbstractRedisServi
 		return listOperations.range(genKey(type, key), 0, -1);
 
 	}
+	
+	/**  清除
+	 * @param type
+	 * @param key
+	 */
+	public void clear(String type, String key) {
+		listOperations.getOperations().delete(genKey(type, key));
+	}
 
 }
