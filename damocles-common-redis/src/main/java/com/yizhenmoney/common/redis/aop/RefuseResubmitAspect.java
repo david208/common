@@ -28,6 +28,7 @@ public class RefuseResubmitAspect {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RefuseResubmitAspect.class);
 
 	private RedisLockService redisLockService;
+	
 
 	public RefuseResubmitAspect(RedisLockService redisLockService) {
 		this.redisLockService = redisLockService;
@@ -45,11 +46,10 @@ public class RefuseResubmitAspect {
 
 	/**
 	 * 
-	 * @description 用户操作日志通知，围绕方法会记录结果
+	 * @description 拒绝重复提交
 	 * @param jp
 	 *            连接点
 	 * @author sm
-	 * @throws Throwable
 	 */
 	@Before("refuseResubmit()")
 	public void refuseResubmitOperate(JoinPoint jp) {
@@ -58,7 +58,7 @@ public class RefuseResubmitAspect {
 
 	/**
 	 * 
-	 * @description 获取备注
+	 * @description 获取判重点
 	 * @param jp
 	 *            连接点
 	 * @return 备注
@@ -70,6 +70,14 @@ public class RefuseResubmitAspect {
 			return refuseResubmit.factors();
 		}
 		return new String[] {};
+	}
+	
+	public int getInterval(JoinPoint jp) {
+		RefuseResubmit refuseResubmit = getAnnotation(jp);
+		if (refuseResubmit != null) {
+			return refuseResubmit.interval();
+		}
+		return 3;
 	}
 
 	private RefuseResubmit getAnnotation(JoinPoint jp) {
@@ -111,10 +119,13 @@ public class RefuseResubmitAspect {
 
 	private void checkRoundTrips(int jopHashcode, JoinPoint jp) {
 		String hashcodeString = jopHashcode + "";
-		boolean result = redisLockService.lock("ResubmitToekn", hashcodeString, 60, TimeUnit.SECONDS);
+		int interval = getInterval(jp);
+		boolean result = redisLockService.lock("ResubmitToekn", hashcodeString,interval, TimeUnit.SECONDS);
 		if (!result) {
-			LOGGER.warn("时间周期内重复提交" + getSignature(jp));
-			throw new RuntimeException("时间周期内重复提交");
+			LOGGER.warn(interval+"秒内重复提交" + getSignature(jp));
+			throw new RuntimeException(interval+"秒内重复提交");
 		}
 	}
+	
+	
 }

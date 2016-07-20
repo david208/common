@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.yizhenmoney.common.redis.aop.DistributedLockAspect;
+import com.yizhenmoney.common.redis.aop.RefuseResubmitAspect;
 import com.yizhenmoney.common.redis.service.RedisLockService;
 
 @Configuration
@@ -14,6 +15,11 @@ public class RedisAopConfig {
 	@Bean
 	public DistributedLockAspect distributedLockAspect(RedisLockService redisLockService) {
 		return new DistributedLockAspect(redisLockService);
+	}
+
+	@Bean
+	public RefuseResubmitAspect refuseResubmitAspect(RedisLockService redisLockService) {
+		return new RefuseResubmitAspect(redisLockService);
 	}
 
 }

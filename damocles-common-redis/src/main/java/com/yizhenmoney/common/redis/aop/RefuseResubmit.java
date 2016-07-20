@@ -17,5 +17,7 @@ import java.lang.annotation.Target;
 public @interface RefuseResubmit {
 
 	String[] factors();
+	
+	int interval() default 3;
 
 }
