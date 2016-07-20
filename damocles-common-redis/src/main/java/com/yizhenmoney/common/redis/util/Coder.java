@@ -1,4 +1,4 @@
-package com.yizhenmoney.common.redis.aop;
+package com.yizhenmoney.common.redis.util;
 
 import java.security.MessageDigest;
 
