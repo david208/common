@@ -72,12 +72,20 @@ public class RefuseResubmitAspect {
 		return new String[] {};
 	}
 	
+	public String[] getExcludes(JoinPoint jp) {
+		RefuseResubmit refuseResubmit = getAnnotation(jp);
+		if (refuseResubmit != null) {
+			return refuseResubmit.excludes();
+		}
+		return new String[] {};
+	}
+	
 	public int getInterval(JoinPoint jp) {
 		RefuseResubmit refuseResubmit = getAnnotation(jp);
 		if (refuseResubmit != null) {
 			return refuseResubmit.interval();
 		}
-		return 3;
+		return 1;
 	}
 
 	private RefuseResubmit getAnnotation(JoinPoint jp) {
@@ -103,18 +111,18 @@ public class RefuseResubmitAspect {
 		String[] argNames = signature.getParameterNames();
 		List<String> argNameList = Arrays.asList(argNames);
 		List<Object> effectValues = new ArrayList<Object>();
-		//effectValues.add(signature.toShortString());
 		for (int i = 0; i < factors.length; i++) {
 			int j = argNameList.indexOf(factors[i]);
 			if (j != -1 && null != argValues[j]) {
 				effectValues.add(argValues[j]);
 			}
 		}
-		checkRoundTrips(hashRequestBody(effectValues), jp);
+		String[] excludes = getExcludes(jp);
+		checkRoundTrips(hashRequestBody(effectValues,excludes), jp);
 	}
 
-	private int hashRequestBody(List<Object> effectValues) {
-		return HashCodeUtil.getHashCode(effectValues);
+	private int hashRequestBody(List<Object> effectValues,String[] excludes) {
+		return HashCodeUtil.getHashCode(effectValues,excludes);
 	}
 
 	private void checkRoundTrips(int jopHashcode, JoinPoint jp) {

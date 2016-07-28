@@ -18,6 +18,8 @@ public @interface RefuseResubmit {
 
 	String[] factors();
 	
-	int interval() default 3;
+	int interval() default 1;
+	
+	String[] excludes() default {};
 
 }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +30,14 @@ public class HashCodeUtil {
 	// return builder.toHashCode();
 	// }
 
-	public static int getHashCode(List<? extends Object> params) {
+	public static int getHashCode(List<? extends Object> params,String[] excludes) {
 		HashCodeBuilder builder = new HashCodeBuilder(17, 37);
 		try {
 			for (Object param : params) {
-				if (param instanceof HashcodeAble) {
-					builder.append(getHashCode(Arrays.asList(((HashcodeAble) param).genEffectArray())));
-				} else if (param instanceof String || param instanceof Number || param instanceof Boolean) {
+				if (param instanceof String || param instanceof Number || param instanceof Boolean || param instanceof Character) {
 					builder.append(param);
 				} else {
-					builder.append(getHashCode(Arrays.asList(getFieldValues(param))));
+					builder.append(getHashCode(Arrays.asList(getFieldValues(param,excludes)),excludes));
 				}
 			}
 			return builder.toHashCode();
@@ -58,14 +57,14 @@ public class HashCodeUtil {
 
 	}
 
-	public static Object[] getFieldValues(Object object) throws Exception {
+	public static Object[] getFieldValues(Object object,String[] excludes) throws Exception {
 		if (null == object)
 			return null;
 		Method[] methods = object.getClass().getMethods();
 		List<Object> fieldValueList = new ArrayList<Object>();
-
+		
 		for (Method f : methods) {
-			if (( f.getName().startsWith("get") || f.getName().startsWith("is")) && !f.getName().equals("getClass")) {
+			if (( f.getName().startsWith("get") || f.getName().startsWith("is")) && !f.getName().equals("getClass") && !ArrayUtils.contains(excludes, f.getName())) {
 				Object object2 = f.invoke(object);
 				if (null != object2 && object2.hashCode() !=  0)
 					fieldValueList.add(object2);
