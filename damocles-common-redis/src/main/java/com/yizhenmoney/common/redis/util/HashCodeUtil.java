@@ -1,9 +1,14 @@
 package com.yizhenmoney.common.redis.util;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 计算hashcode
@@ -12,24 +17,35 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class HashCodeUtil {
 
-//	public static int getHashCode(Object... params) {
-//		HashCodeBuilder builder = new HashCodeBuilder(17, 37);
-//		for (Object param : params) {
-//			builder.append(param);
-//		}
-//		return builder.toHashCode();
-//	}
+	private static final Logger LOGGER = LoggerFactory.getLogger(HashCodeUtil.class);
+
+	private static Random random = new Random(10000L);
+
+	// public static int getHashCode(Object... params) {
+	// HashCodeBuilder builder = new HashCodeBuilder(17, 37);
+	// for (Object param : params) {
+	// builder.append(param);
+	// }
+	// return builder.toHashCode();
+	// }
 
 	public static int getHashCode(List<? extends Object> params) {
 		HashCodeBuilder builder = new HashCodeBuilder(17, 37);
-		for (Object param : params) {
-			if (param instanceof HashcodeAble) {
-				builder.append(getHashCode(Arrays.asList(((HashcodeAble) param).genEffectArray())));
-			} else {
-				builder.append(param);
+		try {
+			for (Object param : params) {
+				if (param instanceof HashcodeAble) {
+					builder.append(getHashCode(Arrays.asList(((HashcodeAble) param).genEffectArray())));
+				} else if (param instanceof String || param instanceof Number || param instanceof Boolean) {
+					builder.append(param);
+				} else {
+					builder.append(getHashCode(Arrays.asList(getFieldValues(param))));
+				}
 			}
+			return builder.toHashCode();
+		} catch (Exception e) {
+			LOGGER.warn("hashError", e);
 		}
-		return builder.toHashCode();
+		return random.nextInt();
 	}
 
 	public static String getToken32(String... strings) throws Exception {
@@ -40,6 +56,23 @@ public class HashCodeUtil {
 		}
 		return DESCoder.md5ToHex(sb.toString());
 
+	}
+
+	public static Object[] getFieldValues(Object object) throws Exception {
+		if (null == object)
+			return null;
+		Method[] methods = object.getClass().getMethods();
+		List<Object> fieldValueList = new ArrayList<Object>();
+
+		for (Method f : methods) {
+			if (( f.getName().startsWith("get") || f.getName().startsWith("is")) && !f.getName().equals("getClass")) {
+				Object object2 = f.invoke(object);
+				if (null != object2 && object2.hashCode() !=  0)
+					fieldValueList.add(object2);
+			}
+		}
+
+		return fieldValueList.toArray();
 	}
 
 }

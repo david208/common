@@ -103,7 +103,7 @@ public class RefuseResubmitAspect {
 		String[] argNames = signature.getParameterNames();
 		List<String> argNameList = Arrays.asList(argNames);
 		List<Object> effectValues = new ArrayList<Object>();
-		effectValues.add(signature.toShortString());
+		//effectValues.add(signature.toShortString());
 		for (int i = 0; i < factors.length; i++) {
 			int j = argNameList.indexOf(factors[i]);
 			if (j != -1 && null != argValues[j]) {
