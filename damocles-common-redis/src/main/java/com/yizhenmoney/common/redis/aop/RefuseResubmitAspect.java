@@ -14,6 +14,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.yizhenmoney.common.redis.exception.ResubmitException;
 import com.yizhenmoney.common.redis.service.RedisLockService;
 import com.yizhenmoney.common.redis.util.HashCodeUtil;
 
@@ -132,7 +133,7 @@ public class RefuseResubmitAspect {
 		boolean result = redisLockService.lock("ResubmitToekn", hashcodeString,interval, TimeUnit.SECONDS);
 		if (!result) {
 			LOGGER.warn(interval+"秒内重复提交" + getSignature(jp));
-			throw new RuntimeException(interval+"秒内重复提交");
+			throw new ResubmitException(interval+"秒内重复提交");
 		}
 	}
 	
