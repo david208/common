@@ -55,5 +55,20 @@ public class RedisMapService<T extends Serializable> extends AbstractRedisServic
 		return hashOperations.entries(genKey(type));
 
 	}
+	
+	public void setAll(String type,Map<? extends String, ? extends T> map) {
+		 hashOperations.putAll(genKey(type), map);
+		 hashOperations.getOperations().expire(genKey(type), 1l, TimeUnit.HOURS);
+	}
+	
+	public void setAll(String type,Map<? extends String, ? extends T> map, long timeout, TimeUnit unit) {
+		 hashOperations.putAll(genKey(type), map);
+		 hashOperations.getOperations().expire(genKey(type), timeout, unit);
+	}
+	
+	public boolean exists(String type,String key) {
+		return hashOperations.hasKey(genKey(type), key);
+
+	}
 
 }
